@@ -10,6 +10,18 @@ let users = [
     { id: 2, name: 'Maria' },
 ];
 
+let users2 = [
+    {
+        id: 1,
+        nome: 'João',
+        sobrenome: "Silva",
+        telefone: "62994756683",
+        dto: new Date(2024, 11, 25),
+        email: "joao.silva@gmail.com",
+        senha: "teste123"
+    }
+];
+
 // Rota inicial (padrão)
 app.get('/', (req, res) => {
     res.send('Bem-vindo à API dsadas!');
@@ -18,6 +30,11 @@ app.get('/', (req, res) => {
 // **[GET] - Retorna todos os usuários**
 app.get('/users', (req, res) => {
     res.json(users);
+});
+
+// **[GET] - Retorna todos os usuários**
+app.get('/usersgyngamer', (req, res) => {
+    res.json(users2);
 });
 
 // **[POST] - Adiciona um novo usuário**
