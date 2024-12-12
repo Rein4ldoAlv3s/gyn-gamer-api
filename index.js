@@ -1,51 +1,72 @@
 const express = require('express');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const bodyParser = require('body-parser');
+
 const app = express();
+app.use(bodyParser.json());
 
-// Middleware para interpretar JSON
-app.use(express.json());
+// Chave secreta para JWT
+const SECRET_KEY = 'minha_chave_secreta_super_segura';
 
-// Dados simulados (em um projeto real, você usaria um banco de dados)
-let users = [
-    { id: 1, name: 'João' },
-    { id: 2, name: 'Maria' },
-];
+// "Banco de dados" simulado
+const users = [];
 
-let users2 = [
-    {
-        id: 1,
-        nome: 'João',
-        sobrenome: "Silva",
-        telefone: "62994756683",
-        dto: new Date(2024, 11, 25),
-        email: "joao.silva@gmail.com",
-        senha: "teste123"
+// Rota de registro
+app.post('/register', async (req, res) => {
+    const { username, password } = req.body;
+
+    // Verificar se o usuário já existe
+    if (users.find(user => user.username === username)) {
+        return res.status(400).json({ message: 'Usuário já existe!' });
     }
-];
 
-// Rota inicial (padrão)
-app.get('/', (req, res) => {
-    res.send('Bem-vindo à API dsadas!');
+    // Hash da senha
+    const hashedPassword = await bcrypt.hash(password, 10);
+    users.push({ username, password: hashedPassword });
+
+    res.status(201).json({ message: 'Usuário registrado com sucesso!' });
 });
 
-// **[GET] - Retorna todos os usuários**
-app.get('/users', (req, res) => {
-    res.json(users);
+// Rota de login
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+
+    const user = users.find(user => user.username === username);
+    if (!user) {
+        return res.status(400).json({ message: 'Usuário ou senha inválidos!' });
+    }
+
+    // Verificar senha
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+        return res.status(400).json({ message: 'Usuário ou senha inválidos!' });
+    }
+
+    // Gerar token JWT
+    const token = jwt.sign({ username: user.username }, SECRET_KEY, { expiresIn: '1h' });
+    res.json({ token });
 });
 
-// **[GET] - Retorna todos os usuários**
-app.get('/usersgyngamer', (req, res) => {
-    res.json(users2);
+// Rota protegida
+app.get('/protected', (req, res) => {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ message: 'Token não fornecido!' });
+    }
+
+    const token = authHeader.split(' ')[1];
+
+    try {
+        const decoded = jwt.verify(token, SECRET_KEY);
+        res.json({ message: 'Acesso concedido!', user: decoded });
+    } catch (error) {
+        res.status(401).json({ message: 'Token inválido!' });
+    }
 });
 
-// **[POST] - Adiciona um novo usuário**
-app.post('/users', (req, res) => {
-    const newUser = { id: users.length + 1, name: req.body.name };
-    users.push(newUser);
-    res.status(201).json(newUser);
-});
-
-// Inicia o servidor
-const PORT = 5000;
-app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
+// Iniciar o servidor
+app.listen(3000, () => {
+    console.log('Servidor rodando em http://localhost:3000');
 });
