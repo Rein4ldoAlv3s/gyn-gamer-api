@@ -2,15 +2,26 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
-app.use(bodyParser.json());
+
+app.use(cors({
+    origin: 'http://localhost:5173', // Permita apenas este domínio
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
+    credentials: true, // Se precisar enviar cookies ou headers com credenciais
+}));
+
+app.use(express.json());
+
 
 // Chave secreta para JWT
 const SECRET_KEY = 'minha_chave_secreta_super_segura';
 
 // "Banco de dados" simulado
 const users = [];
+
+
 
 // Rota de registro
 app.post('/register', async (req, res) => {
@@ -30,6 +41,7 @@ app.post('/register', async (req, res) => {
 
 // Rota de login
 app.post('/login', async (req, res) => {
+    console.log(req.body);
     const { username, password } = req.body;
 
     const user = users.find(user => user.username === username);
