@@ -25,16 +25,34 @@ const users = [];
 
 // Rota de registro
 app.post('/register', async (req, res) => {
-    const { username, password } = req.body;
+    const {
+        nomeUsuario,
+        password,
+        nomeReal,
+        telefone,
+        genero,
+        dto,
+        email
+    } = req.body;
 
     // Verificar se o usuário já existe
-    if (users.find(user => user.username === username)) {
+    if (users.find(user => user.nomeUsuario === nomeUsuario)) {
         return res.status(400).json({ message: 'Usuário já existe!' });
     }
 
     // Hash da senha
     const hashedPassword = await bcrypt.hash(password, 10);
-    users.push({ username, password: hashedPassword });
+    users.push(
+        {
+            nomeUsuario,
+            password: hashedPassword,
+            nomeReal,
+            telefone,
+            genero,
+            dto,
+            email
+        }
+    );
 
     res.status(201).json({ message: 'Usuário registrado com sucesso!' });
 });
@@ -42,9 +60,9 @@ app.post('/register', async (req, res) => {
 // Rota de login
 app.post('/login', async (req, res) => {
     console.log(req.body);
-    const { username, password } = req.body;
+    const { nomeUsuario, password } = req.body;
 
-    const user = users.find(user => user.username === username);
+    const user = users.find(user => user.nomeUsuario === nomeUsuario);
     if (!user) {
         return res.status(400).json({ message: 'Usuário ou senha inválidos!' });
     }
@@ -56,7 +74,7 @@ app.post('/login', async (req, res) => {
     }
 
     // Gerar token JWT
-    const token = jwt.sign({ username: user.username }, SECRET_KEY, { expiresIn: '1h' });
+    const token = jwt.sign({ nomeUsuario: user.nomeUsuario }, SECRET_KEY, { expiresIn: '1h' });
     res.json({ token });
 });
 
