@@ -18,12 +18,14 @@ app.use(express.json());
 // Chave secreta para JWT
 const SECRET_KEY = 'minha_chave_secreta_super_segura';
 
-// "Banco de dados" simulado
+// "Banco de dados" simulado usuarios
 const users = [];
 
+// "Banco de dados" simulado endereços
+const enderecos = [];
 
 
-// Rota de registro
+// Rota de registro de Usuário
 app.post('/register', async (req, res) => {
     const {
         nomeUsuario,
@@ -54,7 +56,43 @@ app.post('/register', async (req, res) => {
         }
     );
 
+    console.log("Usuário registrado com sucesso!");
     res.status(201).json({ message: 'Usuário registrado com sucesso!' });
+});
+
+// Rota de registro de Endereço
+app.post('/registerEndereco', async (req, res) => {
+    const {
+        nomeDestinatario,
+        logradouro,
+        rua,
+        estado,
+        cidade,
+        tipoEndereco,
+        cep,
+        complemento
+    } = req.body;
+
+    // Verificar se o usuário já existe
+    // if (enderecos.find(endereco => endereco.nomeUsuario === nomeUsuario)) {
+    //     return res.status(400).json({ message: 'Usuário já existe!' });
+    // }
+
+    enderecos.push(
+        {
+            nomeDestinatario,
+            logradouro,
+            rua,
+            estado,
+            cidade,
+            tipoEndereco,
+            cep,
+            complemento
+        }
+    );
+
+    console.log(enderecos);
+    res.status(201).json({ message: 'Endereco registrado com sucesso!' });
 });
 
 // Rota de login
