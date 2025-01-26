@@ -3,10 +3,12 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const { Sequelize, DataTypes } = require('sequelize');
 const { v4: uuidv4 } = require('uuid'); // Para gerar IDs únicos caso o usuário não envie um
 
 
 const app = express();
+
 
 app.use(cors({
     origin: 'http://localhost:5173', // Permita apenas este domínio
@@ -25,6 +27,27 @@ const users = [];
 
 // "Banco de dados" simulado endereços
 const enderecos = [];
+
+// Conexão com o banco de dados MySQL
+const sequelize = new Sequelize('gyn_gamer_api', 'root', 'admin123', {
+    host: 'localhost',
+    dialect: 'mysql'
+});
+
+// Testar conexão
+sequelize.authenticate()
+    .then(() => console.log('Conexão com o MySQL foi bem-sucedida!'))
+    .catch(err => console.error('Erro ao conectar ao MySQL:', err));
+
+// Importar o modelo
+const User = require('./models/User')(sequelize);
+
+// Sincronizar tabelas
+sequelize.sync({ force: true })
+    .then(() => {
+        console.log('Tabelas sincronizadas com sucesso!');
+    })
+    .catch((err) => console.error('Erro ao sincronizar tabelas:', err));
 
 
 // Rota de registro de Usuário
