@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const { v4: uuidv4 } = require('uuid'); // Para gerar IDs únicos caso o usuário não envie um
+
 
 const app = express();
 
@@ -42,10 +44,16 @@ app.post('/register', async (req, res) => {
         return res.status(400).json({ message: 'Usuário já existe!' });
     }
 
+    // Gera um ID caso não seja enviado no body
+    const id = uuidv4();
+
+
     // Hash da senha
     const hashedPassword = await bcrypt.hash(password, 10);
+
     users.push(
         {
+            id,
             nomeUsuario,
             password: hashedPassword,
             nomeReal,
@@ -59,6 +67,14 @@ app.post('/register', async (req, res) => {
     console.log("Usuário registrado com sucesso!");
     res.status(201).json({ message: 'Usuário registrado com sucesso!' });
 });
+
+// Rota de listagem de Usuário
+app.get('/list-users', async (req, res) => {
+
+
+    res.status(201).json({ users });
+})
+
 
 // Rota de registro de Endereço
 app.post('/registerEndereco', async (req, res) => {
