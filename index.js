@@ -3,9 +3,8 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { Sequelize, DataTypes } = require('sequelize');
 const { v4: uuidv4 } = require('uuid'); // Para gerar IDs únicos caso o usuário não envie um
-
+const User = require('./models/User');
 
 const app = express();
 
@@ -28,19 +27,11 @@ const users = [];
 // "Banco de dados" simulado endereços
 const enderecos = [];
 
-// Conexão com o banco de dados MySQL
-const sequelize = new Sequelize('gyn_gamer_api', 'root', 'admin123', {
-    host: 'localhost',
-    dialect: 'mysql'
-});
-
 // Testar conexão
+const sequelize = require('./config/database');
 sequelize.authenticate()
     .then(() => console.log('Conexão com o MySQL foi bem-sucedida!'))
     .catch(err => console.error('Erro ao conectar ao MySQL:', err));
-
-// Importar o modelo
-const User = require('./models/User')(sequelize);
 
 // Sincronizar tabelas
 sequelize.sync({ force: true })
@@ -52,43 +43,42 @@ sequelize.sync({ force: true })
 
 // Rota de registro de Usuário
 app.post('/register', async (req, res) => {
-    const {
-        nomeUsuario,
-        password,
-        nomeReal,
-        telefone,
-        genero,
-        dto,
-        email
-    } = req.body;
-
-    // Verificar se o usuário já existe
-    if (users.find(user => user.nomeUsuario === nomeUsuario)) {
-        return res.status(400).json({ message: 'Usuário já existe!' });
-    }
-
-    // Gera um ID caso não seja enviado no body
-    const id = uuidv4();
-
-
-    // Hash da senha
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    users.push(
-        {
-            id,
+    try {
+        const {
             nomeUsuario,
-            password: hashedPassword,
+            password,
             nomeReal,
             telefone,
             genero,
             dto,
             email
-        }
-    );
+        } = req.body;
 
-    console.log("Usuário registrado com sucesso!");
-    res.status(201).json({ message: 'Usuário registrado com sucesso!' });
+        // // Verificar se o usuário já existe
+        // if (User.find(user => user.nomeUsuario === nomeUsuario)) {
+        //     return res.status(400).json({ message: 'Usuário já existe!' });
+        // }
+
+        // Hash da senha
+        // const hashedPassword = await bcrypt.hash(password, 10);
+
+        const newUser = await User.create({
+            nomeUsuario,
+            password,
+            nomeReal,
+            telefone,
+            genero,
+            dto,
+            email
+        });
+        res.status(201).json(newUser);
+
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+        console.log(err.message);
+    }
+
+
 });
 
 // Rota de listagem de Usuário
