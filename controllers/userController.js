@@ -24,16 +24,14 @@ const login = async (req, res) => {
     const user = await User.findOne({
         where: { nomeUsuario: nomeUsuario }
     });
-    console.log("--------------------");
-    console.log(user);
-    console.log(password);
+
     if (!user) {
         return res.status(400).json({ message: 'Usuário ou senha inválidos!' });
     }
 
     // Verificar senha
     // const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (password === user.dataValues.password) {
+    if (password !== user.password) {
         return res.status(400).json({ message: 'Usuário ou senha inválidos!' });
     }
 
