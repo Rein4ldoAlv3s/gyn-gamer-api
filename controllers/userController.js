@@ -1,4 +1,11 @@
 const User = require('../models/User');
+// Chave secreta para JWT
+const SECRET_KEY = 'minha_chave_secreta_super_segura';
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const bodyParser = require('body-parser');
+const { v4: uuidv4 } = require('uuid'); // Para gerar IDs únicos caso o usuário não envie um
+
 
 // Retorna todos os usuários
 const getAllUsers = async (req, res) => {
@@ -11,6 +18,31 @@ const getAllUsers = async (req, res) => {
 };
 
 const login = async (req, res) => {
+    console.log(req.body);
+    const { nomeUsuario, password } = req.body;
+
+    const user = await User.findOne({
+        where: { nomeUsuario: nomeUsuario }
+    });
+    console.log("--------------------");
+    console.log(user);
+    console.log(password);
+    if (!user) {
+        return res.status(400).json({ message: 'Usuário ou senha inválidos!' });
+    }
+
+    // Verificar senha
+    // const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (password === user.dataValues.password) {
+        return res.status(400).json({ message: 'Usuário ou senha inválidos!' });
+    }
+
+    // Gerar token JWT
+    const token = jwt.sign({ nomeUsuario: user.nomeUsuario }, SECRET_KEY, { expiresIn: '1h' });
+    res.json({ token });
+}
+
+const register = async (req, res) => {
     try {
         const {
             nomeUsuario,
@@ -47,7 +79,10 @@ const login = async (req, res) => {
 }
 
 
+
+
 module.exports = {
     getAllUsers,
     login,
+    register
 };
