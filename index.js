@@ -60,7 +60,6 @@ app.post('/register', async (req, res) => {
         // }
 
         // Hash da senha
-        // const hashedPassword = await bcrypt.hash(password, 10);
 
         const newUser = await User.create({
             nomeUsuario,
@@ -129,14 +128,19 @@ app.post('/login', async (req, res) => {
     console.log(req.body);
     const { nomeUsuario, password } = req.body;
 
-    const user = users.find(user => user.nomeUsuario === nomeUsuario);
+    const user = await User.findOne({
+        where: { nomeUsuario: nomeUsuario }
+    });
+    console.log("--------------------");
+    console.log(user);
+    console.log(password);
     if (!user) {
         return res.status(400).json({ message: 'Usuário ou senha inválidos!' });
     }
 
     // Verificar senha
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
+    // const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (password === user.dataValues.password) {
         return res.status(400).json({ message: 'Usuário ou senha inválidos!' });
     }
 
