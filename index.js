@@ -25,22 +25,22 @@ sequelize.sync({ force: true })
     .catch((err) => console.error('Erro ao sincronizar tabelas:', err));
 
 // Rota protegida
-// app.get('/protected', (req, res) => {
-//     const authHeader = req.headers.authorization;
+app.get('/protected', (req, res) => {
+    const authHeader = req.headers.authorization;
 
-//     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-//         return res.status(401).json({ message: 'Token não fornecido!' });
-//     }
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ message: 'Token não fornecido!' });
+    }
 
-//     const token = authHeader.split(' ')[1];
+    const token = authHeader.split(' ')[1];
 
-//     try {
-//         const decoded = jwt.verify(token, SECRET_KEY);
-//         res.json({ message: 'Acesso concedido!', user: decoded });
-//     } catch (error) {
-//         res.status(401).json({ message: 'Token inválido!' });
-//     }
-// });
+    try {
+        const decoded = jwt.verify(token, SECRET_KEY);
+        res.json({ message: 'Acesso concedido!', user: decoded });
+    } catch (error) {
+        res.status(401).json({ message: 'Token inválido!' });
+    }
+});
 
 // Rota padrão para checar o servidor
 app.get('/', (req, res) => {
