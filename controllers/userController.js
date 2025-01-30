@@ -52,13 +52,6 @@ const register = async (req, res) => {
             email
         } = req.body;
 
-        // // Verificar se o usuário já existe
-        // if (User.find(user => user.nomeUsuario === nomeUsuario)) {
-        //     return res.status(400).json({ message: 'Usuário já existe!' });
-        // }
-
-        // Hash da senha
-
         const newUser = await User.create({
             nomeUsuario,
             password,
@@ -68,6 +61,7 @@ const register = async (req, res) => {
             dto,
             email
         });
+
         res.status(201).json(newUser);
 
     } catch (err) {
