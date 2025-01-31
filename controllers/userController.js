@@ -53,6 +53,14 @@ const register = async (req, res) => {
             email
         } = req.body;
 
+        const isUserExist = await User.findOne({
+            where: { nomeUsuario: nomeUsuario }
+        });
+
+        if (isUserExist) {
+            return res.status(400).json({ message: 'Esse Usuário já existe! Informe outro nome' });
+        }
+
         const newUser = await User.create({
             nomeUsuario,
             password,
