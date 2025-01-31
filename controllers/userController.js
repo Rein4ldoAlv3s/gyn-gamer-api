@@ -26,13 +26,14 @@ const login = async (req, res) => {
     });
 
     if (!user) {
-        return res.status(400).json({ message: 'Usuário ou senha inválidos!' });
+        return res.status(400).json({ message: 'Usuário inválido!' });
     }
 
-    // Verificar senha
-    // const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (password !== user.password) {
-        return res.status(400).json({ message: 'Usuário ou senha inválidos!' });
+    const isValid = await user.validPassword(password);
+    console.log(isValid ? "Senha correta!" : "Senha incorreta!");
+
+    if (!isValid) {
+        return res.status(400).json({ message: 'Senha inválida!' });
     }
 
     // Gerar token JWT
