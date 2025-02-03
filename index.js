@@ -7,8 +7,11 @@ app.use(express.json());
 
 //chamada routes e controllers
 const userRoutes = require('./routes/userRoutes');
+const enderecosRoutes = require('./routes/enderecoRoutes')
 app.use('/users', userRoutes);
+app.use('/enderecos', enderecosRoutes);
 //
+
 
 
 
