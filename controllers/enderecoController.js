@@ -32,6 +32,25 @@ const getEnderecoById = async (req, res) => {
     }
 };
 
+const deleteEndereco = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        const endereco = await Endereco.destroy({
+            where: { id: id }
+        });
+
+        if (endereco === 0) {
+            res.status(500).json({ error: 'Nenhum endereco encontrado pra deletar.' });
+        } else {
+            res.status(200).json(`Usuário com ID ${id} deletado.`);
+        }
+
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao buscar endereco' });
+    }
+};
+
 
 // const login = async (req, res) => {
 //     console.log(req.body);
@@ -93,5 +112,6 @@ const register = async (req, res) => {
 module.exports = {
     getAllEnderecos,
     getEnderecoById,
-    register
+    register,
+    deleteEndereco
 };
