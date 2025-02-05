@@ -2,8 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const bcrypt = require("bcryptjs");
 
-const Endereco = sequelize.define(
-    'Endereco',
+const Endereco = sequelize.define('endereco',
     {
         id: {
             type: DataTypes.INTEGER,
@@ -42,7 +41,18 @@ const Endereco = sequelize.define(
             type: DataTypes.STRING,
             allowNull: false,
         },
+        usuarioId: {  // Chave estrangeira para Usuario
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'usuarios', // Nome da tabela (não do modelo)
+                key: 'id'
+            }
+        }
     }
-);
+    , {
+        tableName: 'enderecos',  // Define explicitamente o nome da tabela
+        timestamps: false  // Se não quiser os campos createdAt e updatedAt
+    });
 
 module.exports = Endereco;

@@ -3,7 +3,7 @@ const sequelize = require('../config/database');
 const bcrypt = require("bcryptjs");
 
 const User = sequelize.define(
-    'User',
+    'usuario',
     {
         id: {
             type: DataTypes.INTEGER,
@@ -47,7 +47,10 @@ const User = sequelize.define(
             },
         },
     }
-);
+    , {
+        tableName: 'usuarios',  // Define explicitamente o nome da tabela
+        timestamps: false  // Se não quiser os campos createdAt e updatedAt
+    });
 
 // Método para validar senha
 User.prototype.validPassword = async function (password) {
