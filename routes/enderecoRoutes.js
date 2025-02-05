@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getAllEnderecos, register, getEnderecoById, deleteEndereco } = require('../controllers/enderecoController');
+const { getAllEnderecos, register, getEnderecoById, deleteEndereco, editarEndereco } = require('../controllers/enderecoController');
 
 // obter todos os enderecos
 router.get('/list-all', getAllEnderecos);
@@ -11,9 +11,11 @@ router.get('/:id', getEnderecoById);
 // cadastrar endereco
 router.post('/register', register);
 
-// Rota para deletar endereco
+//deletar endereco
 router.delete('/delete/:id', deleteEndereco);
 
+//editar endereco
+router.put('/edit/:id', editarEndereco);
 
 
 module.exports = router;

@@ -51,31 +51,6 @@ const deleteEndereco = async (req, res) => {
     }
 };
 
-
-// const login = async (req, res) => {
-//     console.log(req.body);
-//     const { nomeUsuario, password } = req.body;
-
-//     const user = await User.findOne({
-//         where: { nomeUsuario: nomeUsuario }
-//     });
-
-//     if (!user) {
-//         return res.status(400).json({ message: 'Usuário inválido!' });
-//     }
-
-//     const isValid = await user.validPassword(password);
-//     console.log(isValid ? "Senha correta!" : "Senha incorreta!");
-
-//     if (!isValid) {
-//         return res.status(400).json({ message: 'Senha inválida!' });
-//     }
-
-//     // Gerar token JWT
-//     const token = jwt.sign({ nomeUsuario: user.nomeUsuario }, SECRET_KEY, { expiresIn: '1h' });
-//     res.json({ token });
-// }
-
 const register = async (req, res) => {
     try {
         const {
@@ -108,10 +83,36 @@ const register = async (req, res) => {
     }
 }
 
+const editarEndereco = async (req, res) => {
+    try {
+        const id = parseInt(req.params.id, 10);
+
+        const newData = req.body;
+
+        const updatedRows = await Endereco.update(newData, {
+            where: { id: id }
+        });
+
+        if (updatedRows === 0) {
+            res.status(500).json({ error: 'Nenhum endereco encontrado para atualizar.' });
+        } else {
+            res.status(200).json(`Endereco com ID ${id} atualizado.`);
+        }
+
+    } catch (error) {
+        console.error('Erro ao atualizar usuário:', error);
+    }
+
+
+}
+
+
+
 
 module.exports = {
     getAllEnderecos,
     getEnderecoById,
     register,
-    deleteEndereco
+    deleteEndereco,
+    editarEndereco
 };
