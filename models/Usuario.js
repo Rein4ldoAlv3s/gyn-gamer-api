@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const bcrypt = require("bcryptjs");
 
-const User = sequelize.define(
+const Usuario = sequelize.define(
     'usuario',
     {
         id: {
@@ -41,9 +41,9 @@ const User = sequelize.define(
     },
     {
         hooks: {
-            beforeCreate: async (user) => {
+            beforeCreate: async () => {
                 const salt = await bcrypt.genSalt(10);
-                user.password = await bcrypt.hash(user.password, salt);
+                usuario.password = await bcrypt.hash(usuario.password, salt);
             },
         },
     }
@@ -53,8 +53,8 @@ const User = sequelize.define(
     });
 
 // Método para validar senha
-User.prototype.validPassword = async function (password) {
+Usuario.prototype.validPassword = async function (password) {
     return bcrypt.compare(password, this.password);
 };
 
-module.exports = User;
+module.exports = Usuario;

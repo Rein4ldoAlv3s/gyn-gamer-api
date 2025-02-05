@@ -1,11 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const { getAllUsers,
+const { getAllUsuarios,
     login,
-    register } = require('../controllers/userController');
+    register,
+    getUsuarioById } = require('../controllers/UsuarioController');
 
 // Rota para obter todos os usuários
-router.get('/list-all', getAllUsers);
+router.get('/list-all', getAllUsuarios);
+
+// Rota para obter usuario
+router.get('/:id', getUsuarioById);
 
 // Rota para cadastrar usuario
 router.post('/register', register);

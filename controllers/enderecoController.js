@@ -10,8 +10,8 @@ const { v4: uuidv4 } = require('uuid'); // Para gerar IDs únicos caso o usuári
 // Retorna todos os usuários
 const getAllEnderecos = async (req, res) => {
     try {
-        const users = await Endereco.findAll();
-        res.status(200).json(users);
+        const usuarios = await Endereco.findAll();
+        res.status(200).json(usuarios);
     } catch (error) {
         res.status(500).json({ error: err.message });
     }
@@ -20,13 +20,13 @@ const getAllEnderecos = async (req, res) => {
 const getEnderecoById = async (req, res) => {
     try {
         const id = req.params.id;
-        const user = await Endereco.findByPk(id);
+        const usuario = await Endereco.findByPk(id);
 
-        if (!user) {
+        if (!usuario) {
             return res.status(404).json({ error: 'Endereco não encontrado' });
         }
 
-        res.status(200).json(user);
+        res.status(200).json(usuario);
     } catch (err) {
         res.status(500).json({ error: 'Erro ao buscar endereco' });
     }
@@ -61,7 +61,8 @@ const register = async (req, res) => {
             cidade,
             tipoEndereco,
             cep,
-            complemento
+            complemento,
+            usuarioId
         } = req.body;
 
         const newEndereco = await Endereco.create({
@@ -72,7 +73,8 @@ const register = async (req, res) => {
             cidade,
             tipoEndereco,
             cep,
-            complemento
+            complemento,
+            usuarioId
         });
 
         res.status(201).json(newEndereco);

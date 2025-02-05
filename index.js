@@ -6,9 +6,9 @@ app.use(cors());
 app.use(express.json());
 
 //chamada routes e controllers
-const userRoutes = require('./routes/userRoutes');
+const usuarioRoutes = require('./routes/usuarioRoutes');
 const enderecosRoutes = require('./routes/enderecoRoutes')
-app.use('/users', userRoutes);
+app.use('/usuarios', usuarioRoutes);
 app.use('/enderecos', enderecosRoutes);
 //
 
@@ -40,7 +40,7 @@ app.get('/protected', (req, res) => {
 
     try {
         const decoded = jwt.verify(token, SECRET_KEY);
-        res.json({ message: 'Acesso concedido!', user: decoded });
+        res.json({ message: 'Acesso concedido!', usuario: decoded });
     } catch (error) {
         res.status(401).json({ message: 'Token inválido!' });
     }

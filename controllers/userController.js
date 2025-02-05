@@ -1,4 +1,5 @@
-const User = require('../models/User');
+const Usuario = require('../models/Usuario');
+const Endereco = require('../models/Endereco');
 // Chave secreta para JWT
 const SECRET_KEY = 'minha_chave_secreta_super_segura';
 const jwt = require('jsonwebtoken');
@@ -8,28 +9,45 @@ const { v4: uuidv4 } = require('uuid'); // Para gerar IDs únicos caso o usuári
 
 
 // Retorna todos os usuários
-const getAllUsers = async (req, res) => {
+const getAllUsuarios = async (req, res) => {
     try {
-        const users = await User.findAll();
-        res.status(200).json(users);
+        const usuarios = await Usuario.findAll();
+        res.status(200).json(s);
     } catch (error) {
         res.status(500).json({ error: err.message });
     }
 };
 
+const getUsuarioById = async (req, res) => {
+    try {
+        const usuario = await Usuario.findOne({
+            where: { id: req.params.id },
+            include: { model: Endereco, as: 'enderecos' }
+        });
+
+        if (!usuario) return res.status(404).json({ error: 'Usuário não encontrado' });
+
+        return res.json(usuario);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Erro ao buscar usuário' });
+    }
+
+}
+
 const login = async (req, res) => {
     console.log(req.body);
     const { nomeUsuario, password } = req.body;
 
-    const user = await User.findOne({
+    const Usuario = await Usuario.findOne({
         where: { nomeUsuario: nomeUsuario }
     });
 
-    if (!user) {
+    if (!Usuario) {
         return res.status(400).json({ message: 'Usuário inválido!' });
     }
 
-    const isValid = await user.validPassword(password);
+    const isValid = await Usuario.validPassword(password);
     console.log(isValid ? "Senha correta!" : "Senha incorreta!");
 
     if (!isValid) {
@@ -37,7 +55,7 @@ const login = async (req, res) => {
     }
 
     // Gerar token JWT
-    const token = jwt.sign({ nomeUsuario: user.nomeUsuario }, SECRET_KEY, { expiresIn: '1h' });
+    const token = jwt.sign({ nomeUsuario: Usuario.nomeUsuario }, SECRET_KEY, { expiresIn: '1h' });
     res.json({ token });
 }
 
@@ -53,15 +71,15 @@ const register = async (req, res) => {
             email
         } = req.body;
 
-        const isUserExist = await User.findOne({
+        const isUsuarioExist = await Usuario.findOne({
             where: { nomeUsuario: nomeUsuario }
         });
 
-        if (isUserExist) {
+        if (isUsuarioExist) {
             return res.status(400).json({ message: 'Esse Usuário já existe! Informe outro nome' });
         }
 
-        const newUser = await User.create({
+        const newUsuario = await Usuario.create({
             nomeUsuario,
             password,
             nomeReal,
@@ -71,7 +89,7 @@ const register = async (req, res) => {
             email
         });
 
-        res.status(201).json(newUser);
+        res.status(201).json(newUsuario);
 
     } catch (err) {
         res.status(400).json({ error: err.message });
@@ -83,7 +101,8 @@ const register = async (req, res) => {
 
 
 module.exports = {
-    getAllUsers,
+    getAllUsuarios,
+    getUsuarioById,
     login,
     register
 };
