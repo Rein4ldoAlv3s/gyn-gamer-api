@@ -79,6 +79,8 @@ const register = async (req, res) => {
             return res.status(400).json({ message: 'Esse Usuário já existe! Informe outro nome' });
         }
 
+        console.log("------" + nomeUsuario);
+
         const newUsuario = await Usuario.create({
             nomeUsuario,
             password,
@@ -89,11 +91,13 @@ const register = async (req, res) => {
             email
         });
 
+
+
         res.status(201).json(newUsuario);
 
     } catch (err) {
         res.status(400).json({ error: err.message });
-        console.log(err.message);
+        console.log(err);
     }
 }
 

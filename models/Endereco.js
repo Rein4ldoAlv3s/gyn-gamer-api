@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const bcrypt = require("bcryptjs");
 
-const Endereco = sequelize.define('endereco',
+const Endereco = sequelize.define('Endereco',
     {
         id: {
             type: DataTypes.INTEGER,
@@ -45,7 +45,7 @@ const Endereco = sequelize.define('endereco',
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: 'usuarios', // Nome da tabela (não do modelo)
+                model: 'usuarios', // Nome da tabela no banco
                 key: 'id'
             }
         }
