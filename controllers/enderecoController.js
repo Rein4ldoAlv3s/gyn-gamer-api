@@ -53,16 +53,15 @@ const deleteEndereco = async (req, res) => {
 
 const register = async (req, res) => {
     try {
-        // const {
-        //     nomeDestinatario,
-        //     logradouro,
-        //     rua,
-        //     estado,
-        //     cidade,
-        //     tipoEndereco,
-        //     cep,
-        //     complemento
-        // } = req.body;
+        const {
+            userId
+        } = req.body;
+
+        //chave estrangeira para relacionar usuario com endereco
+        if (!userId) {
+            return res.status(404).json({ error: 'Erro! Informe o ID de Usuario.' });
+        }
+
 
         const newEndereco = await Endereco.create(req.body);
 
