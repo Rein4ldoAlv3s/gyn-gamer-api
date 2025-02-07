@@ -21,7 +21,7 @@ const getAllUsers = async (req, res) => {
 const getUserById = async (req, res) => {
     try {
         const id = req.params.id;
-        const user = await User.findByPk(id);
+        const user = await User.findByPk(id, { include: Endereco });
 
         if (!user) {
             return res.status(404).json({ error: 'Usuario não encontrado' });
