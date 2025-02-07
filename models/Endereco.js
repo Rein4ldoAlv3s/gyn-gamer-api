@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const bcrypt = require("bcryptjs");
+const User = require('./User');
 
 const Endereco = sequelize.define(
     'Endereco',
@@ -44,5 +45,8 @@ const Endereco = sequelize.define(
         },
     }
 );
+
+User.hasMany(Endereco, { foreignKey: "userId" });
+Endereco.belongsTo(User, { foreignKey: "userId" });
 
 module.exports = Endereco;

@@ -5,12 +5,13 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const bodyParser = require('body-parser');
 const { v4: uuidv4 } = require('uuid'); // Para gerar IDs únicos caso o usuário não envie um
+const Endereco = require('../models/Endereco');
 
 
 // Retorna todos os usuários
 const getAllUsers = async (req, res) => {
     try {
-        const users = await User.findAll();
+        const users = await User.findAll({ include: Endereco });
         res.status(200).json(users);
     } catch (error) {
         res.status(500).json({ error: err.message });

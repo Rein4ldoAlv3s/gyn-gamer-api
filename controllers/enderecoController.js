@@ -53,27 +53,18 @@ const deleteEndereco = async (req, res) => {
 
 const register = async (req, res) => {
     try {
-        const {
-            nomeDestinatario,
-            logradouro,
-            rua,
-            estado,
-            cidade,
-            tipoEndereco,
-            cep,
-            complemento
-        } = req.body;
+        // const {
+        //     nomeDestinatario,
+        //     logradouro,
+        //     rua,
+        //     estado,
+        //     cidade,
+        //     tipoEndereco,
+        //     cep,
+        //     complemento
+        // } = req.body;
 
-        const newEndereco = await Endereco.create({
-            nomeDestinatario,
-            logradouro,
-            rua,
-            estado,
-            cidade,
-            tipoEndereco,
-            cep,
-            complemento
-        });
+        const newEndereco = await Endereco.create(req.body);
 
         res.status(201).json(newEndereco);
 
