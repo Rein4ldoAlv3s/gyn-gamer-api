@@ -2,10 +2,14 @@ const express = require('express');
 const router = express.Router();
 const { getAllUsers,
     login,
-    register } = require('../controllers/userController');
+    register,
+    getUserById } = require('../controllers/userController');
 
 // Rota para obter todos os usuários
-router.get('/list-all', getAllUsers);
+router.get('/', getAllUsers);
+
+// Rota para obter usuario por ID
+router.get('/:id', getUserById);
 
 // Rota para cadastrar usuario
 router.post('/register', register);
