@@ -41,6 +41,8 @@ const login = async (req, res) => {
         where: { nomeUsuario: nomeUsuario }
     });
 
+    console.log(user);
+
     if (!user) {
         return res.status(400).json({ message: 'Usuário inválido!' });
     }
@@ -54,7 +56,12 @@ const login = async (req, res) => {
 
     // Gerar token JWT
     const token = jwt.sign({ nomeUsuario: user.nomeUsuario }, SECRET_KEY, { expiresIn: '1h' });
-    res.json({ token });
+    res.json(
+        {
+            token: token,
+            idUser: user.id
+        }
+    );
 }
 
 const register = async (req, res) => {
