@@ -22,7 +22,11 @@ sequelize.authenticate()
     .catch(err => console.error('Erro ao conectar ao MySQL:', err));
 
 // Sincronizar tabelas
-sequelize.sync({ force: true })
+sequelize.sync(
+    //reseta banco de dados
+    // { force: true }
+
+)
     .then(() => {
         console.log('Tabelas sincronizadas com sucesso!');
     })
